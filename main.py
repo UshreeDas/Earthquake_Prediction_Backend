@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
-from routes import historical_data
+from routes import historical_data, fault_line  
 
 app = FastAPI()
 
-# CORS settings
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +18,11 @@ app.add_middleware(
 client = MongoClient("mongodb://localhost:27017/")
 db = client["earthquake"]
 collection = db["historical_data"]
+fault_line_collection = db["fault_line"]  
 
-# Register routes with access to DB collection
+# Initialize and register routes
 historical_data.init_routes(collection)
+fault_line.init_fault_line_routes(fault_line_collection)  
+
 app.include_router(historical_data.router)
+app.include_router(fault_line.router)
