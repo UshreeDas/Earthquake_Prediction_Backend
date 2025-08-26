@@ -6,6 +6,8 @@ from pymongo import MongoClient
 from routes import historical_data, fault_line
 from routes.lat_long_zone import router as prediction_router
 from routes.earthquake_combined import router as combined_router  # ✅ Full prediction router
+from routes.predict_mag import router as predict_mag_router
+
 
 app = FastAPI(title="Earthquake Prediction API")
 
@@ -33,6 +35,8 @@ app.include_router(historical_data.router)
 app.include_router(fault_line.router)
 app.include_router(prediction_router, prefix="/api")       # ➕ /api/predict (lat/lon/zone)
 app.include_router(combined_router, prefix="/api")         # ➕ /api/predict-full (lat/lon/zone + magnitude)
+app.include_router(predict_mag_router, prefix="/predict/mag") 
+
 
 # Root endpoint
 @app.get("/")
