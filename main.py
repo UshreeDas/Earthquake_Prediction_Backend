@@ -7,9 +7,23 @@ from routes import historical_data, fault_line
 from routes.lat_long_zone import router as prediction_router
 from routes.earthquake_combined import router as combined_router  # ✅ Full prediction router
 from routes.predict_mag import router as predict_mag_router
+from routes.auth import router as auth_router
 
+# Import Database funtions
+from database.db import database, metadata, engine
+from contextlib import asynccontextmanager
+from sqlalchemy.orm import declarative_base
 
-app = FastAPI(title="Earthquake Prediction API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    await database.connect()
+    yield
+    # shutdown
+    await database.disconnect()
+
+     
+app = FastAPI(title="Earthquake Prediction API", lifespan=lifespan)
 
 # CORS setup
 app.add_middleware(
@@ -26,6 +40,8 @@ db = client["earthquake"]
 collection = db["historical_data"]
 fault_line_collection = db["fault_line"]
 
+
+
 # Register Mongo-based routers
 historical_data.init_routes(collection)
 fault_line.init_fault_line_routes(fault_line_collection)
@@ -37,6 +53,8 @@ app.include_router(prediction_router, prefix="/api")       # ➕ /api/predict (l
 app.include_router(combined_router, prefix="/api")         # ➕ /api/predict-full (lat/lon/zone + magnitude)
 app.include_router(predict_mag_router, prefix="/predict/mag") 
 
+# include auth routers
+app.include_router(auth_router, prefix="/auth")
 
 # Root endpoint
 @app.get("/")
