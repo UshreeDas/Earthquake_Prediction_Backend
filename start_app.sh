@@ -1,15 +1,13 @@
+#!/bin/bash
 APP_NAME="earthquake_prediction_backend"
-APP_MODULE="app:app"   # change "app:app" → (filename:Flask app variable)
+APP_MODULE="main:app"
 HOST="0.0.0.0"
 PORT=7000
 WORKERS=4
 
-# Activate venv if needed
-# source venv/bin/activate
-
-# Run Flask with Gunicorn
-exec gunicorn $APP_MODULE \
+# Run FastAPI with Uvicorn
+exec uvicorn $APP_MODULE \
+    --host $HOST \
+    --port $PORT \
     --workers $WORKERS \
-    --bind $HOST:$PORT \
-    --timeout 120 \
     --log-level info
