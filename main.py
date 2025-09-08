@@ -29,14 +29,19 @@ app = FastAPI(title="Earthquake Prediction API", lifespan=lifespan)
 # CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:1420",
+        "http://127.0.0.1:1420",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
 # MongoDB setup
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://DMMPrice:Babai6157201@82.29.161.123:27017/")
 db = client["earthquake"]
 collection = db["historical_data"]
 fault_line_collection = db["fault_line"]

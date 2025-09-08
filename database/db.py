@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, MetaData
 from databases import Database
 
-DATABASE_URI = "mysql+pymysql://root:@localhost:3306/testdb"
+DATABASE_URI = "mysql+pymysql://DMMPrice:Babai%406157201@82.29.161.123:3306/testdb"
 
 # async database connection
 database = Database(DATABASE_URI)
